@@ -1,4 +1,4 @@
-# Node js Mongodb Restful services
+# Node js Mongodb & React, Small Task Manager
 
 A Boilerplate for setup restful api's for Nodejs and Express, Database is Mongodb.
 
