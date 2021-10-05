@@ -1,0 +1,15 @@
+{
+  "response_messages": {
+    "something_went_wrong": "Something went wrong. Please try again after sometime.",
+    "incorrect_password": "Incorrect password!",
+    "user_exists": "User already exits!",
+    "user_does_not_exists": "User does not exits!",
+    "new_user_success": "User account created successfully!",
+    "valid_name": "Please fill a valid name.",
+    "valid_email": "Please fill a valid email address.",
+    "valid_password": "Password must contain at least one letter and one number or length to be between 6 to 14",
+    "delete_user": "User deleted successfully",
+    "delete_all_user": "All users deleted successfully",
+    "update_user": "User updated successfully"
+  }
+}

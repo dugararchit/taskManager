@@ -1,0 +1,41 @@
+{
+  "name": "nodeexpressboilerplate",
+  "version": "1.0.0",
+  "description": "This could be a helpful node express boilerplate as basic express setup",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production nodemon src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/index.js",
+    "prettier:fix": "prettier --write **/*.js **/*/*.js",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up"
+  },
+  "author": "Archit Dugar",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.4",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6",
+    "validator": "^13.6.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.0.5",
+    "supertest": "^6.1.6"
+  }
+}
