@@ -21,6 +21,9 @@ class Home extends Component {
       doneTasks: [],
       favTasks: [],
 
+      todaysTasks: [],
+      upcomingTasks: [],
+      overdueTasks: [],
       modalTaskForm: false,
       modalTaskForm_Toggle: "",
       message: "",
@@ -29,7 +32,7 @@ class Home extends Component {
       deadline: "",
       priority: "5",
       fav: false,
-
+      filter: "all",
       act: 0,
       index: 0,
       renderTasks: 1,
@@ -52,12 +55,40 @@ class Home extends Component {
   fetchingTasks = () => {
     TasksService.getTask().then(
       (tasks) => {
+        const upcoming = [],
+          todays = [],
+          overdue = [];
         if (tasks.success) {
           const tasksData = tasks.data.filter((task) => task.isActive === true);
+          tasksData.map((value) => {
+            console.log(value.deadline);
+            if (value.deadline) {
+              let dt = value.deadline.split("T");
+              const dd = new Date(dt[0]);
+              let todaysDate = moment();
+              todaysDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+              var givenDate = moment(dd);
+              givenDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+              const dateDiff = givenDate.diff(todaysDate, "day");
+              const taskSetup = dateDiff < 0 ? "overdue" : dateDiff === 0 ? "todays" : "upcoming";
+              console.dir(taskSetup, { depth: "full" });
+              if (taskSetup === "upcoming") {
+                upcoming.push(value);
+              } else if (taskSetup === "overdue") {
+                overdue.push(value);
+              } else {
+                todays.push(value);
+              }
+            }
+          });
           const doneTasksData = tasks.data.filter((task) => task.isDone === true);
           this.setState({
             tasks: tasksData,
             doneTasks: doneTasksData,
+            todaysTasks: todays,
+            overdueTasks: overdue,
+            upcomingTasks: upcoming,
           });
         } else {
           this.setState({
@@ -189,18 +220,19 @@ class Home extends Component {
   };
 
   // setting for dateTime view
-  viewDateTime = (dt) => {
+  viewDateTime = (dt, whichPanel) => {
     if (dt) {
       dt = dt.split("T");
-
-      var options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
       const d = new Date(dt[0]);
-      const n = d.toLocaleDateString(["en-US"], options);
-      const todaysDate = moment();
+      let todaysDate = moment();
+      todaysDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
       var givenDate = moment(d);
-      const dateDiff = givenDate.diff(todaysDate, "days");
-      const taskSetup = dateDiff < 0 ? "Overdue" :  (dateDiff === 0) ? "Todays": "Upcoming";
-      return `${n} @${dt[1]} --- [${taskSetup}]`;
+      givenDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+      const dateDiff = givenDate.diff(todaysDate, "day");
+      const taskSetup = dateDiff < 0 ? "Overdue" : dateDiff === 0 ? "Todays" : "Upcoming";
+      const tasksCategory = whichPanel === "tasks" ? `--- [${taskSetup}]` : "";
+      return `${dt[0]} @${dt[1]} ${tasksCategory}`;
     } else {
       return "";
     }
@@ -222,6 +254,7 @@ class Home extends Component {
             tasks,
           });
           this.props.addToast(res.message, { autoDismiss: true });
+          this.fetchingTasks();
         } else {
           this.handleError(res.message);
         }
@@ -262,7 +295,17 @@ class Home extends Component {
   };
 
   render() {
-    let { message, modalTaskForm, modalTaskForm_Toggle, tasks, title, description, deadline, doneTasks, renderTasks, navActive, priority } = this.state;
+    let { message, modalTaskForm, modalTaskForm_Toggle, tasks, title, description, deadline, doneTasks, renderTasks, navActive, priority, filter, todaysTasks, upcomingTasks, overdueTasks } = this.state;
+    let dataToShow = [];
+    if (filter === "all") {
+      dataToShow = tasks;
+    } else if (filter === "upcoming") {
+      dataToShow = upcomingTasks;
+    } else if (filter === "todays") {
+      dataToShow = todaysTasks;
+    } else if (filter === "overdue") {
+      dataToShow = overdueTasks;
+    }
 
     return (
       <div className="App" style={{ paddingTop: 20 }}>
@@ -276,7 +319,7 @@ class Home extends Component {
             <div className="column is-12">
               <div className="field has-addons">
                 <p className="control">
-                  <a href={() => false} className="button is-link is-rounded" onClick={() => this.modalTaskForm(!modalTaskForm)}>
+                  <a href={() => false} className="button is-link" onClick={() => this.modalTaskForm(!modalTaskForm)}>
                     <span className="icon">
                       <i className="fa fa-plus" />
                     </span>
@@ -303,7 +346,7 @@ class Home extends Component {
                 <p className="control">
                   <a
                     href={() => false}
-                    className={`button is-rounded is-link ${navActive === "done" ? "is-outlined" : ""}`}
+                    className={`button is-link ${navActive === "done" ? "is-outlined" : ""}`}
                     onClick={() => {
                       this.setState({
                         renderTasks: 2,
@@ -323,8 +366,22 @@ class Home extends Component {
 
           {/* TODO LIST */}
           <div style={{ paddingTop: 60 }}>
+            {renderTasks === 1 && (
+              <div className="field">
+                <div className="control">
+                  <label className="label">Filter</label>
+                  <select value={this.state.filter} onChange={(e) => this.inputChange(e)} name="filter">
+                    <option value="all">All</option>
+                    <option value="todays">Todays</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="overdue">Overdue</option>
+                  </select>
+                </div>
+              </div>
+            )}
+            <hr />
             {renderTasks === 1 &&
-              tasks.map((data, i) => (
+              dataToShow.map((data, i) => (
                 <div className="columns" key={i}>
                   <div className="column is-12">
                     <article className="media">
@@ -335,7 +392,7 @@ class Home extends Component {
                             <br />
                             {data.description}
                             <br />
-                            <small>{this.viewDateTime(data.deadline)}</small>
+                            <small>{this.viewDateTime(data.deadline, "tasks")}</small>
                             <br />
                             <span>{data.priority ? "Priority- P" + data.priority : ""}</span>
                           </p>
@@ -376,7 +433,7 @@ class Home extends Component {
                           <br />
                           {data.description}
                           <br />
-                          <small>{this.viewDateTime(data.deadline)}</small>
+                          <small>{this.viewDateTime(data.deadline, "done")}</small>
                           <br />
                           <span>{data.priority ? "Priority- P" + data.priority : ""}</span>
                         </div>

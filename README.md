@@ -1,13 +1,27 @@
 # Node js Mongodb & React, Small Task Manager
 
-A Boilerplate for setup restful api's for Nodejs and Express, Database is Mongodb.
+
+## TechStack
+A Boilerplate for setup restful api's for "Nodejs and Express", Database is Mongodb.
+
+Frontend is "React"
+
+
+### Features covered are:-
+1. User signup and login system
+2. User is able to create task, delete task and update task from the given list of tasks.
+3. Every task has feature to assign deadline to the task
+4. every task that user create or edit has Priorty from P1 to P5, which user can set.
+5. user can mark the task and complete or from completed task user can undo that.
+6. Task are written as Overdue, Upcoming or Todays task given in the list of tasks.
+
+
 
 ## Quick Start
 
 To start with just clone ( Url needs to be added)
 git clone --depth 1 git/link
 
-cd /path/to/the/folder/
 cd /path/to/the/folder/
 
 open two terminals, one for Server and other for Client
