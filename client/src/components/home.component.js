@@ -192,6 +192,7 @@ class Home extends Component {
               tasks,
             });
             this.props.addToast(res.message, { autoDismiss: true });
+            this.fetchingTasks();
           } else {
             this.handleError(res.message);
           }
