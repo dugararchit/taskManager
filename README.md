@@ -15,6 +15,15 @@ Frontend is "React"
 5. user can mark the task and complete or from completed task user can undo that.
 6. Task are written as Overdue, Upcoming or Todays task given in the list of tasks.
 
+## Screenshots
+
+![alt text](screenshots/login.png "Login")
+
+![alt text](screenshots/registration.png "Registration")
+
+![alt text](screenshots/screentaskfetch.png "HomeScreen")
+
+![alt text](screenshots/scrrenmodal.png "New Modal")
 
 
 ## Quick Start
